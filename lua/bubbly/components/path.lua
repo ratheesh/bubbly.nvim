@@ -5,6 +5,7 @@
 
 local bubble_factory = require'bubbly.factories.bubble'
 local settings = {
+   project = vim.g.bubbly_symbols.project,
    symbol = vim.g.bubbly_symbols.path,
    color = vim.g.bubbly_colors.path,
    inactive_color = vim.g.bubbly_inactive_color,
@@ -38,7 +39,12 @@ return function(inactive)
          style = settings.style.unmodifiable,
       },
       {
-         data = '%.30f',
+         data = vim.call('utils#getprojectname'),
+         color = inactive and settings.inactive_color or settings.color.project,
+         style = inactive and settings.inactive_style or settings.style.project,
+      },
+      {
+         data = '%.25f',
          color = inactive and settings.inactive_color or settings.color.path,
          style = inactive and settings.inactive_style or settings.style.path,
       },
