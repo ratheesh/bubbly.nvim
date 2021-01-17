@@ -23,9 +23,15 @@ end
 return function(inactive)
    return bubble_factory{
       {
-         data = '%-8.(%l:%c%)',
+         -- data = '%-8.(%l:%c%)',
+         data = '%(%l:%c%)',
          color = inactive and settings.inactive_color or settings.color.rowandcol,
          style = inactive and settings.inactive_style or settings.style.rowandcol,
+      },
+      {
+         data = 'ch:%02Bh',
+         color = inactive and settings.inactive_color or settings.color.hexchar,
+         style = inactive and settings.inactive_style or settings.style.hexchar,
       },
       {
          data = '%P',
