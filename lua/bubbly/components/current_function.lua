@@ -20,8 +20,8 @@ end
 return function(inactive)
   return {{
     data = vim.call('tagbar#currenttag', '%s', ''),
-    color = inactive and settings.inactive_color or settings.color.current_function,
-    style = inactive and settings.inactive_style or settings.style.current_function,
+    color = inactive and settings.inactive_color or settings.color,
+    style = inactive and settings.inactive_style or settings.style,
   }}
 end
 -- End of File
