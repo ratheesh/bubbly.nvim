@@ -15,9 +15,12 @@ This plugin has support for these bubbles, feel free to open an issue or a pull 
 - _Git_ branch bubble.
 - [_Signify_](https://github.com/mhinz/vim-signify) changes bubble.
 - [_Coc.nvim_](https://github.com/neoclide/coc.nvim) diagnostics bubble.
+- [_Lsp-status_](https://github.com/nvim-lua/lsp-status.nvim) diagnostics and messages bubble.
 - _Neovim built-in LSP_ current function and diagnostics bubble.
 - Filetype bubble.
 - Progress bubble.
+- Total buffer number bubble.
+
 
 ## Table of Contents
 
@@ -51,6 +54,8 @@ This plugin has support for these bubbles, feel free to open an issue or a pull 
             * [Default configuration](#default-configuration-9)
          * [`g:bubbly_width`](#gbubbly_width)
             * [Default configuration](#default-configuration-10)
+         * [`g:bubbly_timing`](#gbubbly_timing)
+            * [Default configuration](#default-configuration-11)
       * [For Developers](#for-developers)
          * [Components](#components)
          * [Autocommands](#autocommands)
@@ -170,6 +175,9 @@ Every string that is not a keyword should be the name of a module inside `lua/bu
 - `builtinlsp.current_function`
 - `filetype`
 - `progress`
+- `total_buffer_number`
+- `lsp_status.diagnostics`
+- `lsp_status.messages`
 
 #### Default configuration
 
@@ -202,11 +210,12 @@ vim.g.bubbly_tabline = 1
 
 This variable is used to define the palette available to every component and their respective colors. You can define more colors than the default and use them in your components or in the configuration variable without any worry.
 
+Accepted values are `cterm-colors` naming such as `LightGrey` or `DarkMagenta`, hexadecimal values such as `#123abc` and highlight groups such as `Normal background` or `LineNr foreground`.
+
 #### Default configuration
 
 ```lua
 vim.g.bubbly_palette = {
-   -- It can also be a hex value like #012345.
    background = "Black",
    foreground = "White",
    black = "Black",
@@ -268,7 +277,16 @@ vim.g.bubbly_symbols = {
          warning = 'W%s', --requires 1 '%s'
       },
    },
-   branch = ' %s' -- requires 1 '%s'
+   branch = ' %s', -- requires 1 '%s'
+   total_buffer_number = '﬘ %s', --requires 1 '%d'
+   lsp_status = {
+      diagnostics = {
+         error = 'E%d',
+         warning = 'W%d',
+         hint = 'H%d',
+         info = 'I%d',
+      },
+   },
 }
 ```
 
@@ -353,12 +371,22 @@ vim.g.bubbly_colors = {
       active = 'blue',
       inactive = 'white',
    },
+   total_buffer_number = 'cyan',
+   lsp_status = {
+      messages = 'white',
+      diagnostics = {
+         error = 'red',
+         warning = 'yellow',
+         hint = 'white',
+         info = 'blue',
+      },
+   },
 }
 ```
 
 ### `g:bubbly_inactive_color`
 
-This variable defines the color used by bubbles when the statusline is inactive. It follows the same structure for colors as [`g:bubbly_colors`](#gbubbly_colors).
+This variable defines the color used by bubbles when the statusline is inactive. It follows the same structure for colors as [`g:bubbly_colors`](#gbubbly_colors) (e.g. it can be `'red'` or `{ foreground = 'red', background = 'blue' }`).
 
 #### Default configuration
 
@@ -411,6 +439,16 @@ vim.g.bubbly_styles = {
       active = 'bold',
       inactive = '',
    },
+   total_buffer_number = '',
+   lsp_status = {
+      messages = '',
+      diagnostics = {
+         error = '',
+         warning = '',
+         hint = '',
+         info = '',
+      },
+   },
 }
 ```
 
@@ -421,6 +459,7 @@ This variable defines the style for the bubbles in an inactive statusline.
 #### Default configuration
 
 ```lua
+-- Can be '' or 'bold' or 'italic'.
 vim.g.bubbly_inactive_style = ''
 ```
 
@@ -438,6 +477,24 @@ vim.g.bubbly_width = {
 
    progress = {
       rowandcol = 8,
+   },
+}
+```
+
+### `g:bubbly_timing`
+
+This variable defines some timing configuration related to some bubbles.
+
+#### Default configuration
+
+```lua
+vim.g.bubbly_timing = {
+   default = 0,
+
+   lsp_status = {
+      messages = {
+         update_delay = 500, -- ms
+      },
    },
 }
 ```
@@ -495,8 +552,8 @@ return {
       events = { 'Event1', 'Event2' },
       -- This is the variable that contains the result of the autocommand.
       variable = {
-         -- This is the type of the variable, it can be: 'buffer', 'window' and 'global'.
-         type = 'string',
+         -- This is the type of the variable, it can be either 'buffer', 'window' or 'global'.
+         type = 'buffer' or 'window' or 'global',
          -- This is the name the global function will have and also the name of the variable that contains the result.
          name = 'string',
       },

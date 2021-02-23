@@ -60,6 +60,15 @@
          },
       },
       branch = ' %s',
+      total_buffer_number = '﬘ %d',
+      lsp_status = {
+         diagnostics = {
+            error = 'E%d',
+            warning = 'W%d',
+            hint = 'H%d',
+            info = 'I%d',
+         },
+      },
    }
 -- ====
 -- Tags
@@ -132,6 +141,16 @@
          active = 'blue',
          inactive = 'white',
       },
+      total_buffer_number = 'cyan',
+      lsp_status = {
+         messages = 'white',
+         diagnostics = {
+            error = 'red',
+            warning = 'yellow',
+            hint = 'white',
+            info = 'blue',
+         },
+      },
    }
    M.inactive_color = { background = 'lightgrey', foreground = 'foreground' }
 -- ======
@@ -175,6 +194,16 @@
          active = 'bold',
          inactive = '',
       },
+      total_buffer_number = '',
+      lsp_status = {
+         messages = '',
+         diagnostics = {
+            error = '',
+            warning = '',
+            hint = '',
+            info = '',
+         },
+      },
    }
    M.inactive_style = ''
 -- =====
@@ -185,6 +214,18 @@
 
       progress = {
          rowandcol = 8,
+      },
+   }
+-- ======
+-- Timing
+-- ======
+   M.timing = {
+      default = 0,
+
+      lsp_status = {
+         messages = {
+            update_delay = 500, -- ms
+         },
       },
    }
 -- ==========
@@ -216,6 +257,8 @@
       vim.g.bubbly_tags = fusion(M.tags, vim.g.bubbly_tags)
       -- Width
       vim.g.bubbly_width = fusion(M.width, vim.g.bubbly_width)
+      -- Timing
+      vim.g.bubbly_timing = fusion(M.timing, vim.g.bubbly_timing)
       -- Colors
       vim.g.bubbly_colors = fusion(M.colors, vim.g.bubbly_colors)
       if not vim.g.bubbly_inactive_color then
